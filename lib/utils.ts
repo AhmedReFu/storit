@@ -183,36 +183,61 @@ export const constructDownloadUrl = (bucketFileId: string) => {
 };
 
 // DASHBOARD UTILS
-export const getUsageSummary = (totalSpace: any) => {
+
+interface TotalSpace {
+  document: {
+    size: number;
+    latestDate: string;
+  };
+  image: {
+    size: number;
+    latestDate: string;
+  };
+  video: {
+    size: number;
+    latestDate: string;
+  };
+  audio: {
+    size: number;
+    latestDate: string;
+  };
+  other: {
+    size: number;
+    latestDate: string;
+  };
+}
+export const getUsageSummary = (totalSpace: TotalSpace) => {
+  const defaultSpace = { size: 0, latestDate: "" };
+
   return [
     {
       title: "Documents",
-      size: totalSpace.document.size,
-      latestDate: totalSpace.document.latestDate,
+      size: totalSpace.document?.size || defaultSpace.size,
+      latestDate: totalSpace.document?.latestDate || defaultSpace.latestDate,
       icon: "/assets/icons/file-document-light.svg",
       url: "/documents",
     },
     {
       title: "Images",
-      size: totalSpace.image.size,
-      latestDate: totalSpace.image.latestDate,
+      size: totalSpace.image?.size || defaultSpace.size,
+      latestDate: totalSpace.image?.latestDate || defaultSpace.latestDate,
       icon: "/assets/icons/file-image-light.svg",
       url: "/images",
     },
     {
       title: "Media",
-      size: totalSpace.video.size + totalSpace.audio.size,
+      size: (totalSpace.video?.size || 0) + (totalSpace.audio?.size || 0),
       latestDate:
-        totalSpace.video.latestDate > totalSpace.audio.latestDate
-          ? totalSpace.video.latestDate
-          : totalSpace.audio.latestDate,
+        totalSpace.video?.latestDate > totalSpace.audio?.latestDate
+          ? totalSpace.video?.latestDate || defaultSpace.latestDate
+          : totalSpace.audio?.latestDate || defaultSpace.latestDate,
       icon: "/assets/icons/file-video-light.svg",
       url: "/media",
     },
     {
       title: "Others",
-      size: totalSpace.other.size,
-      latestDate: totalSpace.other.latestDate,
+      size: totalSpace.other?.size || defaultSpace.size,
+      latestDate: totalSpace.other?.latestDate || defaultSpace.latestDate,
       icon: "/assets/icons/file-other-light.svg",
       url: "/others",
     },
